@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio: Metodologias Ativas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: O aplicativo foi estruturado como um jogo de quiz linear com três telas distintas (início, jogo, fim) gerenciadas via JavaScript para mostrar/ocultar seções. Essa abordagem foi escolhida por ser intuitiva e direta, guiando o usuário de forma clara desde a introdução até a conclusão do desafio. A estrutura foca em um fluxo de aprendizado sequencial: apresentação de um cenário, tomada de decisão, feedback imediato e pontuação final, o que é ideal para reforçar conceitos práticos de forma rápida e eficaz. -->
+    <!-- Visualization & Content Choices: O conteúdo do prompt foi transformado em um quiz interativo. Report Info: Cenários de metodologias ativas. -> Goal: Avaliar e ensinar a aplicação dessas metodologias. -> Viz/Presentation Method: Blocos de texto para cenários, botões para opções de resposta. -> Interaction: O usuário clica em uma resposta, o sistema fornece feedback visual (cores) e textual (explicações). Uma barra de tempo e um placar aumentam o engajamento. -> Justification: Este formato é o mais eficaz para um objetivo de treinamento baseado em cenários, pois simula a tomada de decisão. As cores e explicações imediatas reforçam o aprendizado. -> Library/Method: Vanilla JavaScript para a lógica do jogo e Tailwind CSS para o estilo. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .timer-bar-inner {
+            transition: width 1s linear;
+        }
+        .btn-option {
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-stone-50 text-stone-800 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-2xl mx-auto">
+
+        <div id="start-screen" class="text-center bg-white p-8 rounded-2xl shadow-lg">
+            <h1 class="text-3xl md:text-4xl font-bold text-teal-700 mb-4">Desafio: Metodologias Ativas</h1>
+            <p class="text-stone-600 mb-8 max-w-prose mx-auto">Teste seus conhecimentos sobre a aplicação de metodologias ativas em cenários reais da sala de aula. Você está pronto para começar?</p>
+            <button id="start-btn" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition-colors shadow-md">Começar</button>
+        </div>
+
+        <div id="game-screen" class="hidden bg-white p-6 md:p-8 rounded-2xl shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <div class="text-lg font-bold">Pontuação: <span id="score">0</span></div>
+                <div class="text-lg font-bold">Questão <span id="question-counter">1</span>/<span id="total-questions"></span></div>
+            </div>
+            <div class="w-full bg-stone-200 rounded-full h-2.5 mb-6">
+                <div id="timer-bar" class="bg-amber-500 h-2.5 rounded-full timer-bar-inner" style="width: 100%"></div>
+            </div>
+            
+            <p class="text-lg text-stone-700 mb-6 min-h-[100px]" id="question-text"></p>
+            
+            <div id="options-container" class="grid grid-cols-1 gap-4 opacity-0 transition-opacity duration-700">
+            </div>
+
+            <div id="feedback-container" class="mt-6 text-center min-h-[60px]">
+                <p id="feedback-text" class="text-md font-medium"></p>
+            </div>
+        </div>
+
+        <div id="end-screen" class="hidden text-center bg-white p-8 rounded-2xl shadow-lg">
+            <h2 class="text-3xl md:text-4xl font-bold text-teal-700 mb-4">Desafio Concluído!</h2>
+            <p class="text-xl text-stone-600 mb-2">Sua pontuação final foi:</p>
+            <p id="final-score" class="text-5xl font-bold text-amber-500 mb-8"></p>
+            <p id="final-message" class="text-stone-600 mb-8 max-w-prose mx-auto"></p>
+            <button id="restart-btn" class="bg-teal-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-teal-700 transition-colors shadow-md">Jogar Novamente</button>
+        </div>
+
+    </div>
+
+    <script>
+        const startScreen = document.getElementById('start-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const endScreen = document.getElementById('end-screen');
+        
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        const scoreEl = document.getElementById('score');
+        const questionCounterEl = document.getElementById('question-counter');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const timerBar = document.getElementById('timer-bar');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackTextEl = document.getElementById('feedback-text');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalMessageEl = document.getElementById('final-message');
+
+        const questions = [
+            {
+                scenario: "Uma turma do 9º ano precisa desenvolver um projeto sobre o impacto do lixo eletrônico na comunidade. Eles devem pesquisar, coletar dados, propor soluções e apresentar os resultados finais.",
+                options: ["Sala de Aula Invertida", "Aprendizagem Baseada em Projetos (ABP) 🏗️", "Rotação por Estações"],
+                correctAnswer: 1,
+                feedback: "Correto! A ABP é ideal para projetos complexos que envolvem pesquisa, colaboração e um produto final, promovendo autonomia.",
+                incorrectFeedback: "Incorreto. Essa abordagem, que se concentra em um trabalho prático e com foco na resolução de um problema real, é uma característica de projetos."
+            },
+            {
+                scenario: "Para introduzir 'Figuras de Linguagem', o professor quer que os alunos tenham o primeiro contato com o conteúdo em casa, para usar o tempo em sala para tirar dúvidas e fazer atividades práticas.",
+                options: ["Sala de Aula Invertida 🧑‍🏫➡️🧑‍🎓", "Aprendizagem Baseada em Projetos", "Gamificação"],
+                correctAnswer: 0,
+                feedback: "Exato! Na Sala de Aula Invertida, os alunos estudam a teoria em casa e usam a aula para aprofundar o conhecimento com o professor.",
+                incorrectFeedback: "Incorreto. A prática de preparar o conteúdo teórico para ser visto em casa é a principal premissa de um modelo híbrido."
+            },
+            {
+                scenario: "Uma professora de matemática quer revisar três tópicos (frações, porcentagem e juros simples) em uma única aula, garantindo que todos os alunos pratiquem os conteúdos em grupos menores.",
+                options: ["Aprendizagem Baseada em Problemas", "Rotação por Estações 🔄", "Sala de Aula Invertida"],
+                correctAnswer: 1,
+                feedback: "Perfeito! A Rotação por Estações permite dividir a turma em grupos que circulam por diferentes atividades, otimizando o tempo.",
+                incorrectFeedback: "Incorreto. O método que utiliza a divisão de grupos por atividades tem um nome específico, que não é sobre resolução de problemas ou um método híbrido."
+            },
+            {
+                scenario: "Alunos de história estão desmotivados. O professor decide desafiá-los a criar um documentário em vídeo sobre a Revolução Industrial, onde eles serão os roteiristas, diretores e editores.",
+                options: ["Rotação por Estações", "Aprendizagem Baseada em Projetos (ABP) 🏗️", "Ensino Híbrido"],
+                correctAnswer: 1,
+                feedback: "Isso mesmo! A ABP aumenta a motivação ao conectar o aprendizado a um produto final autêntico e significativo para os alunos.",
+                incorrectFeedback: "Incorreto. Quando os alunos precisam criar algo palpável, como um documentário, a metodologia correta tem foco em projetos."
+            },
+            {
+                scenario: "Um professor de ciências precisa que os alunos aprendam sobre o sistema solar. Ele prepara um vídeo para ser assistido em casa e planeja usar a aula para construir modelos planetários em grupo.",
+                options: ["Sala de Aula Invertida 🧑‍🏫➡️🧑‍🎓", "Gamificação", "Rotação por Estações"],
+                correctAnswer: 0,
+                feedback: "Correto! A Sala de Aula Invertida libera o tempo presencial para atividades práticas e colaborativas, como a construção de modelos.",
+                incorrectFeedback: "Incorreto. A metodologia onde o aluno estuda a teoria em casa e pratica em sala é chamada de sala de aula invertida."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft;
+        const TIME_PER_QUESTION = 15;
+
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+
+        function startGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            scoreEl.textContent = score;
+            totalQuestionsEl.textContent = questions.length;
+            
+            startScreen.classList.add('hidden');
+            endScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            resetState();
+            if (currentQuestionIndex >= questions.length) {
+                endGame();
+                return;
+            }
+
+            const currentQuestion = questions[currentQuestionIndex];
+            questionCounterEl.textContent = currentQuestionIndex + 1;
+            questionTextEl.textContent = "Cenário: " + currentQuestion.scenario;
+            
+            setTimeout(() => {
+                optionsContainer.classList.remove('opacity-0');
+                currentQuestion.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('btn-option', 'w-full', 'bg-stone-100', 'p-4', 'rounded-lg', 'text-left', 'text-stone-700', 'font-medium', 'hover:bg-teal-100');
+                    button.addEventListener('click', () => selectAnswer(index, button));
+                    optionsContainer.appendChild(button);
+                });
+                startTimer();
+            }, 3000);
+        }
+        
+        function startTimer() {
+            timeLeft = TIME_PER_QUESTION;
+            timerBar.style.width = '100%';
+            timerBar.classList.remove('bg-red-500');
+            timerBar.classList.add('bg-amber-500');
+
+            timer = setInterval(() => {
+                timeLeft--;
+                const widthPercentage = (timeLeft / TIME_PER_QUESTION) * 100;
+                timerBar.style.width = `${widthPercentage}%`;
+
+                if (timeLeft < 5) {
+                    timerBar.classList.remove('bg-amber-500');
+                    timerBar.classList.add('bg-red-500');
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    handleTimeout();
+                }
+            }, 1000);
+        }
+
+        function handleTimeout() {
+            feedbackTextEl.textContent = "Tempo esgotado! A resposta correta foi: " + questions[currentQuestionIndex].options[questions[currentQuestionIndex].correctAnswer];
+            feedbackTextEl.classList.add('text-amber-600');
+            
+            disableOptions();
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                showQuestion();
+            }, 5000);
+        }
+
+        function resetState() {
+            clearInterval(timer);
+            optionsContainer.innerHTML = '';
+            feedbackTextEl.textContent = '';
+            feedbackTextEl.className = 'text-md font-medium';
+            optionsContainer.classList.add('opacity-0');
+        }
+
+        function selectAnswer(selectedIndex, button) {
+            clearInterval(timer);
+            const correct = selectedIndex === questions[currentQuestionIndex].correctAnswer;
+            
+            disableOptions();
+
+            if (correct) {
+                score += 10;
+                scoreEl.textContent = score;
+                button.classList.remove('bg-stone-100', 'hover:bg-teal-100');
+                button.classList.add('bg-green-500', 'text-white');
+                feedbackTextEl.textContent = questions[currentQuestionIndex].feedback;
+                feedbackTextEl.classList.add('text-green-600');
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    showQuestion();
+                }, 5000);
+            } else {
+                button.classList.remove('bg-stone-100', 'hover:bg-teal-100');
+                button.classList.add('bg-red-500', 'text-white');
+                optionsContainer.children[questions[currentQuestionIndex].correctAnswer].classList.add('bg-green-500', 'text-white');
+                feedbackTextEl.textContent = questions[currentQuestionIndex].incorrectFeedback;
+                feedbackTextEl.classList.add('text-red-600');
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    showQuestion();
+                }, 5000);
+            }
+        }
+
+        function disableOptions() {
+             Array.from(optionsContainer.children).forEach(btn => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-teal-100', 'hover:translate-y-[-2px]');
+            });
+        }
+        
+        function endGame() {
+            gameScreen.classList.add('hidden');
+            endScreen.classList.remove('hidden');
+            finalScoreEl.textContent = score;
+
+            let message = "";
+            const percentage = (score / (questions.length * 10)) * 100;
+            if (percentage >= 80) {
+                message = "Excelente! Você demonstrou um ótimo conhecimento sobre metodologias ativas. Continue inovando em suas práticas pedagógicas!";
+            } else if (percentage >= 50) {
+                message = "Bom trabalho! Você está no caminho certo. Continue estudando e aplicando esses conceitos para se aprimorar cada vez mais.";
+            } else {
+                message = "Continue estudando! O mundo das metodologias ativas é vasto. Esta é uma ótima oportunidade para revisar os conceitos e tentar novamente.";
+            }
+            finalMessageEl.textContent = message;
+        }
+
+    </script>
+</body>
+</html>
