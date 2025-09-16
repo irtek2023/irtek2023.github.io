@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infográfico: O Canvas do Gemini</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Color Palette: Vibrant & Professional -->
+    <!-- NEITHER Mermaid JS NOR SVG were used in this output. -->
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .icon-circle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            width: 64px;
+            height: 64px;
+            font-size: 2rem;
+        }
+        .flow-arrow {
+            font-size: 2.5rem;
+            color: #ee9b00;
+        }
+    </style>
+</head>
+<body class="text-[#001219]">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-[#005f73]">O Canvas do Gemini</h1>
+            <p class="text-lg md:text-xl mt-4 text-[#0a9396]">Seu Espaço Integrado de Ideias e Criação</p>
+        </header>
+
+        <main class="space-y-10">
+            <section id="ambiente" class="card p-6 md:p-8">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h2 class="text-2xl font-bold text-[#005f73] mb-3">Ambiente de Criação Intuitivo</h2>
+                        <p class="text-base text-gray-700">O Canvas é um espaço de trabalho visualmente claro, projetado para você criar e editar projetos de forma fluida. É o seu assistente de criação, onde as ideias tomam forma.</p>
+                    </div>
+                    <div class="flex justify-center items-center p-4">
+                         <div class="icon-circle bg-[#e9d8a6] text-[#ca6702]">🖌️</div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="interacao" class="card p-6 md:p-8">
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                     <div class="flex justify-center items-center p-4 order-last md:order-first">
+                         <div class="icon-circle bg-[#94d2bd] text-[#005f73]">🤝</div>
+                    </div>
+                    <div class="text-right">
+                        <h2 class="text-2xl font-bold text-[#005f73] mb-3">Interação em Tempo Real</h2>
+                        <p class="text-base text-gray-700">Visualize e interaja com os resultados das suas solicitações instantaneamente. As respostas aparecem na tela em tempo real, permitindo um fluxo de trabalho dinâmico e contínuo.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="versatilidade" class="card p-6 md:p-8 text-center">
+                <h2 class="text-2xl font-bold text-[#005f73] mb-6">Versatilidade de Conteúdo: Crie de Tudo!</h2>
+                <p class="max-w-3xl mx-auto mb-8 text-gray-700">O Canvas é uma ferramenta multifuncional. De códigos complexos a planejamentos estratégicos, ele se adapta às suas necessidades de criação.</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="icon-circle bg-[#0a9396] text-white mx-auto mb-3">💻</div>
+                        <h3 class="font-semibold text-lg">Código e Programas</h3>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="icon-circle bg-[#ee9b00] text-white mx-auto mb-3">🌐</div>
+                        <h3 class="font-semibold text-lg">Páginas Web</h3>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="icon-circle bg-[#ca6702] text-white mx-auto mb-3">📝</div>
+                        <h3 class="font-semibold text-lg">Conteúdo Criativo</h3>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="icon-circle bg-[#ae2012] text-white mx-auto mb-3">📈</div>
+                        <h3 class="font-semibold text-lg">Planos e Relatórios</h3>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fluxo" class="card p-6 md:p-8 text-center">
+                 <h2 class="text-2xl font-bold text-[#005f73] mb-6">Fluxo de Trabalho Simplificado</h2>
+                 <p class="max-w-3xl mx-auto mb-8 text-gray-700">O processo, desde a solicitação até a visualização, é projetado para ser organizado e eficiente, mantendo seu bate-papo limpo.</p>
+                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-8">
+                    <div class="flex flex-col items-center">
+                        <div class="icon-circle bg-[#e9d8a6] text-[#ca6702]">📁</div>
+                        <h3 class="font-semibold mt-2">1. Organização em Arquivos</h3>
+                        <p class="text-sm text-gray-600 max-w-xs mt-1">Cada resposta é gerada em um novo arquivo, separando o conteúdo do bate-papo.</p>
+                    </div>
+                    <div class="flow-arrow hidden md:block">&rarr;</div>
+                     <div class="flow-arrow block md:hidden transform rotate-90">&rarr;</div>
+                    <div class="flex flex-col items-center">
+                        <div class="icon-circle bg-[#94d2bd] text-[#005f73]">👁️‍🗨️</div>
+                        <h3 class="font-semibold mt-2">2. Visualização Rápida</h3>
+                        <p class="text-sm text-gray-600 max-w-xs mt-1">Tenha uma prévia de suas criações, como jogos ou sites, antes de exportar.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-12 py-6 border-t border-gray-300">
+            <p class="text-gray-600">O Canvas do Gemini transforma a maneira como você cria, oferecendo um ambiente poderoso, organizado e interativo.</p>
+        </footer>
+    </div>
+
+</body>
+</html>
